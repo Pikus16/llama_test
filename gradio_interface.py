@@ -1,5 +1,5 @@
+import fire
 import gradio as gr
-from typing import List
 from llama import Llama
 
 def main(
@@ -17,19 +17,21 @@ def main(
         max_seq_len=max_seq_len,
         max_batch_size=max_batch_size,
     )
+    return generator
 
-    def chat_with_llama(user_message: str) -> str:
-        dialogs = [[{"role": "user", "content": user_message}]]
-        results = generator.chat_completion(
-            dialogs,  # type: ignore
-            max_gen_len=max_gen_len,
-            temperature=temperature,
-            top_p=top_p,
-        )
-        return results[0]['generation']['content']
-
-    iface = gr.Interface(fn=chat_with_llama, inputs="text", outputs="text")
-    iface.launch()
+def chat_with_llama(generator, user_input):
+    dialogs = [
+        [{"role": "user", "content": user_input}],
+    ]
+    results = generator.chat_completion(
+        dialogs,
+        max_gen_len=max_gen_len,
+        temperature=temperature,
+        top_p=top_p,
+    )
+    return results[0]['generation']['content']
 
 if __name__ == "__main__":
-    fire.Fire(main)
+    generator = fire.Fire(main)
+    iface = gr.Interface(fn=chat_with_llama, inputs="text", outputs="text")
+    iface.launch()
