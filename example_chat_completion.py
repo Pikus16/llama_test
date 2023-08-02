@@ -1,3 +1,4 @@
+"""
 # Copyright (c) Meta Platforms, Inc. and affiliates.
 # This software may be used and distributed according to the terms of the Llama 2 Community License Agreement.
 
@@ -60,14 +61,19 @@ These are just a few of the many attractions that Paris has to offer. With so mu
         top_p=top_p,
     )
 
+    chat_completions = []
     for dialog, result in zip(dialogs, results):
+        chat_dialog = []
         for msg in dialog:
-            print(f"{msg['role'].capitalize()}: {msg['content']}\n")
-        print(
+            chat_dialog.append(f"{msg['role'].capitalize()}: {msg['content']}\n")
+        chat_dialog.append(
             f"> {result['generation']['role'].capitalize()}: {result['generation']['content']}"
         )
-        print("\n==================================\n")
+        chat_completions.append("\n".join(chat_dialog))
+
+    return chat_completions
 
 
 if __name__ == "__main__":
     fire.Fire(main)
+"""
